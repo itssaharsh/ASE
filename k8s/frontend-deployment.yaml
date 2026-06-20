@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: crisis-frontend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: crisis-frontend
+  template:
+    metadata:
+      labels:
+        app: crisis-frontend
+    spec:
+      containers:
+      - name: crisis-frontend
+        image: your-registry/crisis-frontend:latest
+        ports:
+        - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: crisis-frontend
+spec:
+  type: LoadBalancer
+  selector:
+    app: crisis-frontend
+  ports:
+  - port: 80
+    targetPort: 80

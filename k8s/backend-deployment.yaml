@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: crisis-backend
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: crisis-backend
+  template:
+    metadata:
+      labels:
+        app: crisis-backend
+    spec:
+      containers:
+      - name: crisis-backend
+        image: your-registry/crisis-backend:latest
+        ports:
+        - containerPort: 8000
+        env:
+        - name: MONGODB_URL
+          value: "mongodb://crisis-mongodb:27017"
+        - name: DATABASE_NAME
+          value: "crisis_monitoring"
+        - name: NEWS_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: crisis-secrets
+              key: news-api-key
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: crisis-backend
+spec:
+  selector:
+    app: crisis-backend
+  ports:
+  - port: 8000
+    targetPort: 8000
